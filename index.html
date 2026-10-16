@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>تحدّي الحجاب | كويز تفاعلي</title>
+<style>
+:root{--pink:#f7c9df;--pink2:#ffe8f2;--purple:#8d65b5;--purple2:#5c3b80;--ink:#38294a;--white:#fffafd}
+*{box-sizing:border-box} body{margin:0;font-family:Tahoma,Arial,sans-serif;background:linear-gradient(135deg,#fff1f7,#eee3ff);color:var(--ink);min-height:100vh}
+header{text-align:center;padding:24px 14px 12px}h1{margin:0;color:var(--purple2);font-size:clamp(27px,5vw,44px)}header p{margin:10px 0;color:#715a83}
+.wrap{max-width:950px;margin:auto;padding:12px 16px 35px}.teams{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:12px 0 18px}
+.team{background:#fffafd;border:2px solid #e7c8ed;border-radius:16px;padding:12px;text-align:center;box-shadow:0 4px 12px #73508b12}
+.team.active{border-color:#8d65b5;box-shadow:0 0 0 3px #d9c2f2}.team strong{display:block;font-size:15px}.score{font-size:25px;color:var(--purple2);font-weight:bold;margin:7px}
+.smallbtn{border:0;border-radius:10px;padding:7px 10px;background:#f2e5fa;color:#54366f;cursor:pointer;font-weight:bold}.buzzbtn{border:0;border-radius:12px;padding:10px 9px;background:linear-gradient(110deg,#f3b4d3,#c7a5ec);color:#402753;cursor:pointer;font-weight:bold;width:100%;margin-top:5px}.buzzbtn:disabled{opacity:.4;cursor:default}.team.used{opacity:.7}.timer.answer-mode{background:#ffe4ef;color:#8b3f6c}.timer.think-mode{background:#f5e8ff}
+.panel{background:#fffafd;border:1px solid #ead5f0;border-radius:24px;padding:clamp(18px,4vw,32px);box-shadow:0 12px 35px #62477d15}
+.topline{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap;color:#76528f;font-weight:bold}
+.timer{font-size:22px;background:#f5e8ff;border-radius:14px;padding:8px 14px;min-width:100px;text-align:center}.timer-controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:10px 0 0}.timer-controls button:disabled{opacity:.45;cursor:default}
+.bar{height:8px;background:#f1e4f5;border-radius:99px;overflow:hidden;margin:16px 0 24px}.bar span{display:block;height:100%;width:0;background:linear-gradient(90deg,#e98fbd,#8d65b5);transition:width .25s}
+.tag{display:inline-block;background:#ffe3f0;color:#914b77;padding:7px 12px;border-radius:999px;font-size:14px;margin:8px 0}
+h2{font-size:clamp(22px,4vw,32px);line-height:1.6;margin:8px 0 22px}
+.answers{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.answer{background:#fff;border:2px solid #e8d9ef;border-radius:15px;padding:15px 12px;font-size:17px;color:var(--ink);cursor:pointer;min-height:62px;font-family:inherit;transition:.15s}
+.answer:hover:not(:disabled){border-color:#a781ca;background:#fcf6ff}.answer:disabled{cursor:default;opacity:1}.answer.correct{background:#e0f7e9;border-color:#4ca66d}.answer.wrong{background:#ffe5e8;border-color:#d86b80}
+.feedback{margin:16px 0 0;font-weight:bold;font-size:18px;min-height:28px}.controls{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:20px}
+.primary{border:0;border-radius:14px;padding:13px 20px;font-size:16px;font-weight:bold;background:linear-gradient(110deg,#b87fc5,#8d65b5);color:white;cursor:pointer}.primary:disabled{opacity:.45;cursor:default}.secondary{border:2px solid #d9c2e8;background:#fff8fd;color:#674581;border-radius:14px;padding:12px 18px;font-weight:bold;cursor:pointer}
+.hidden{display:none!important}.notice{text-align:center;font-size:14px;color:#795d8c;margin:18px 0}.result{text-align:center}.result h2{color:#69428d}.winner{font-size:24px;color:#8b4c9e;font-weight:bold}.rules{background:#fff8fd;border-radius:16px;padding:14px 18px;line-height:1.9;margin:14px 0}
+@media(max-width:600px){.teams{grid-template-columns:repeat(2,1fr)}.answers{grid-template-columns:1fr}.team{padding:10px}}
+</style></head>
+<body>
+<header><h1>🎀 تحدّي الحجاب 🎀</h1><p>مسابقة تفاعلية — معرفة، تركيز، وروح فريق 💗</p></header>
+<div class="wrap">
+<div class="rules" id="rules"><strong>طريقة اللعب:</strong> اضغطي «ابدأ السؤال» ليبدأ وقت التفكير (دقيقتان). كل مجموعة ترفع بطاقتها بالضغط على زر مجموعتها؛ أول مجموعة تُسجَّل لها البطاقة تأخذ دور الإجابة لمدة 30 ثانية. إذا أخطأت أو انتهى وقتها، تتاح الفرصة للمجموعات الأخرى بالتتابع. الإجابة الصحيحة = 10 نقاط، والسؤال الختامي = 20 نقطة. ترتيب الأسئلة عشوائي، لكن الخيارات ثابتة.</div>
+<div class="teams" id="teams"></div>
+<section class="panel" id="game">
+<div class="topline"><span id="round">السؤال 1 من 20</span><span id="teamTurn">الجميع يفكر</span><span class="timer" id="timer">🧠 02:00</span></div>
+<div class="timer-controls"><button class="primary" id="timerStart">▶ ابدأ السؤال</button><button class="secondary" id="timerPause" disabled>⏸ إيقاف مؤقت</button><span id="timerStatus" class="notice" style="margin:0">المؤقّت متوقف حتى تضغطي ابدأ السؤال</span></div><div class="bar"><span id="progress"></span></div>
+<div class="tag" id="kind">صح أم خطأ</div>
+<h2 id="question">استعدّوا للتحدّي!</h2>
+<div class="answers" id="answers"></div><div class="feedback" id="feedback" aria-live="polite"></div>
+<div class="controls"><button class="secondary" id="reset">إعادة من البداية</button><button class="primary" id="next" disabled>السؤال التالي ←</button></div>
+</section>
+<section class="panel result hidden" id="result"><div style="font-size:50px">🏆</div><h2>انتهى التحدّي!</h2><p id="winner" class="winner"></p><div id="finalScores"></div><button class="primary" id="again">العبوا مرة أخرى</button></section>
+<p class="notice">💜 تذكير: الهدف من المسابقة التعلّم باحترام، وقد تختلف بعض التفاصيل الفقهية بحسب المرجع التعليمي.</p>
+</div>
+<script>
+const questions = [
+{type:"فهم موقف",q:"طالبة ترتدي حجابًا طويلًا وواسعًا، لكن القماش شفاف. ما الملاحظة الأهم؟",a:["الطول والاتساع يكفيان دائمًا","الشفافية قد تمنع تحقق الستر حتى لو كان الحجاب طويلًا وواسعًا","اللون الداكن يحل المشكلة دائمًا","لا علاقة لنوع القماش بالستر"],c:1,why:"لا يكفي طول اللباس واتساعه إذا كان القماش شفافًا؛ المهم تحقق الستر."},
+{type:"اختاري الأدق",q:"قالت طالبة: «حجابي طويل، إذن هو مناسب من كل ناحية». ما الذي تحتاج إلى تذكّره؟",a:["الطول وحده لا يثبت أن جميع الضوابط متحققة","كل لباس طويل يحقق كل الشروط","اللون أهم من بقية الصفات دائمًا","لا داعي للنظر إلى خامة القماش"],c:0,why:"الطول صفة مهمة، لكنه لا يكفي وحده للحكم على كل صفات اللباس."},
+{type:"مقارنة",q:"قطعتان لهما اللون والطول نفسيهما، لكن إحداهما شفافة والأخرى غير شفافة. ما الفرق الأهم؟",a:["سعر القطعة","مدى شهرة تصميمها","تأثير القماش في تحقق الستر","عدد من يرتدينها"],c:2,why:"الفرق المتعلق بالستر هنا هو شفافية القماش، لا السعر أو الشهرة."},
+{type:"فكّري في الاستنتاج",q:"رأت طالبة فتاة محجبة تتصرف بطريقة خاطئة، فقالت إن الحجاب لا فائدة منه. ما الرد الأفضل؟",a:["تصرف شخص واحد يثبت أن الجميع يتصرفون مثله","لا يجوز أبدًا مناقشة السلوك","سلوك شخص واحد لا يحدد قيمة الحجاب ولا يمثل كل المحجبات","المظهر وحده يثبت أخلاق كل إنسان"],c:2,why:"من غير الدقيق الحكم على فكرة كاملة من تصرف شخص واحد؛ فالسلوك يختلف من شخص لآخر."},
+{type:"اكتشاف الخطأ",q:"أي عبارة فيها تعميم غير صحيح؟",a:["ينبغي التأكد من مصدر المعلومة الدينية","قد تختلف تفاصيل بعض الحالات","كل من ترتدي الحجاب تكون أخلاقها كاملة بالضرورة","من الأفضل احترام الآخرين عند النقاش"],c:2,why:"ارتداء الحجاب وحده لا يكفي للحكم على أخلاق الإنسان كاملة."},
+{type:"تطبيق",q:"في مشروع عن الحجاب، قالت طالبة إن لباسًا ما مناسب دون أن تذكر السبب. ما السؤال الأفضل؟",a:["هل هذا اللون مشهور؟","ما الضوابط التي اعتمدتِ عليها للحكم على اللباس؟","هل أعجب الجمهور شكله؟","هل ترتديه شخصية مشهورة؟"],c:1,why:"السؤال عن الضوابط يجعل الرأي أوضح ويمكن مناقشته بطريقة أدق."},
+{type:"معلومة ناقصة",q:"نعرف أن لباسًا واسع، لكننا لا نعرف إن كان شفافًا أو ماذا يغطي. ماذا نستطيع أن نقول؟",a:["هو مستوفٍ لكل الضوابط بالتأكيد","هو غير مناسب بالتأكيد","اللون وحده يحسم الحكم","المعلومات غير كافية للحكم على كل التفاصيل"],c:3,why:"لا يصح إصدار حكم شامل عندما تنقصنا معلومات مهمة عن الحالة."},
+{type:"تمييز",q:"قالت طالبة: «كل ما اعتاد الناس لبسه هو حكم ديني ثابت». ما الفكرة الأدق؟",a:["كل العادات أحكام دينية","العادة لا تكون لها أي علاقة باللباس أبدًا","ينبغي التمييز بين العادات الاجتماعية والأحكام الشرعية والتحقق من المصدر","ما يفعله أكثر الناس صحيح بالضرورة"],c:2,why:"انتشار عادة لا يجعلها وحده حكمًا دينيًا؛ ينبغي التحقق من الدليل."},
+{type:"التحقق من معلومة",q:"وجدتِ منشورًا عن الحجاب ينقل حكمًا دينيًا دون ذكر مصدره. ما الخطوة الأفضل؟",a:["نشره مباشرة لأنه مكتوب بثقة","البحث عن مصدر موثوق والتأكد من الكلام وسياقه","قبوله إذا كان تصميمه جميلًا","رفض كل المعلومات المنشورة على الإنترنت"],c:1,why:"الأفضل التحقق من مصدر المعلومة وسياقها بدل قبولها أو رفضها دون بحث."},
+{type:"اختاري الحجة الأقوى",q:"أي طريقة أفضل لشرح ضابط من ضوابط الحجاب في العرض؟",a:["أقول إنه صحيح لأنني أعتقد ذلك فقط","أعتمد على كلام منتشر دون مصدر","أحاول إقناع الجميع حتى لو لم أتحقق","أشرح الضابط وأذكر مصدرًا موثوقًا وأوضح الفكرة"],c:3,why:"شرح الفكرة مع مصدر موثوق يجعل العرض أدق وأقوى."},
+{type:"تفكير في موقف",q:"إذا كان اللباس غير شفاف، لكنه يصف تفاصيل الجسم بوضوح، فما الأدق؟",a:["عدم الشفافية وحده لا يكفي؛ ينبغي النظر إلى بقية ضوابط الستر أيضًا","عدم الشفافية يعني أن كل الضوابط متحققة","اللون الداكن يحسم كل شيء","لا يمكن مناقشة صفات اللباس"],c:0,why:"ينبغي النظر إلى أكثر من صفة؛ تحقق صفة واحدة لا يعني تحقق جميع الضوابط."},
+{type:"اكتشاف التعميم",q:"رأت طالبة مثالًا واحدًا لحجاب غير مستوفٍ للضوابط، ثم قالت إن كل أنواع الحجاب كذلك. ما الخطأ؟",a:["أنها استخدمت صورة","أنها عممت حكم حالة واحدة على جميع الحالات","أنها تحدثت عن الحجاب","أنها سألت سؤالًا"],c:1,why:"لا يصح تعميم نتيجة مثال واحد على جميع الحالات المختلفة."},
+{type:"حل خلاف",q:"اختلفت طالبتان حول انطباق أحد ضوابط الحجاب على لباس معيّن. ما التصرف الأفضل؟",a:["تختار كل واحدة رأيها وتنهي النقاش","تعتبران الأكثر ثقة في كلامها هي الصحيحة","تحددان سبب الاختلاف وتتحققان من التفاصيل ومصدر موثوق","تختاران الرأي الأكثر انتشارًا فقط"],c:2,why:"التحقق من التفاصيل والرجوع إلى مصدر موثوق أفضل من الاعتماد على الثقة أو الشهرة."},
+{type:"النية واللباس",q:"قالت طالبة: «نيتي طيبة، لذلك لا حاجة إلى النظر إلى صفات اللباس». ما الرد الأدق؟",a:["النية الطيبة تثبت وحدها تحقق كل الضوابط","لا أهمية للنية في أي موضوع","إذا كان الشخص محبوبًا فلا نناقش اللباس","النية وصفات اللباس أمران مختلفان، والنية وحدها لا تجيب عن سؤال الستر"],c:3,why:"السؤال عن صفات اللباس يحتاج إلى النظر إلى تلك الصفات، ولا تحسمه النية وحدها."},
+{type:"حالة مركبة",q:"لباس طويل وواسع وغير شفاف، لكن لم تُذكر بقية تفاصيله. ما الحكم الأكثر دقة؟",a:["بعض الصفات واضحة، لكن نحتاج إلى التفاصيل ذات الصلة قبل الحكم على كل الضوابط","كل الضوابط متحققة بالتأكيد","هو غير مناسب بالتأكيد","تصويت المجموعة يكفي للحكم"],c:0,why:"نذكر ما نعرفه، ولا نجزم بأمور لم تتوفر عنها معلومات كافية."},
+{type:"الوصف أم الرأي؟",q:"أي جملة تصف شيئًا يمكن ملاحظته بدل أن تعتمد على الذوق؟",a:["هذا أجمل لباس في العالم","هذا اللباس لا يعجبني، لذلك هو خطأ","القماش يظهر ما تحته عند تسليط الضوء عليه","من تختار هذا اللون لا تفهم الحجاب"],c:2,why:"الجملة الثالثة تصف خاصية يمكن فحصها، أما البقية فتعتمد على الذوق أو التعميم."},
+{type:"اختيار مصدر",q:"وجدتِ معلومتين عن الحجاب: واحدة بلا مراجع، وأخرى توضح مصدرها. ما الأفضل؟",a:["الأولى لأنها أقصر","الثانية لأنها تتيح التحقق من أصل المعلومة وسياقها","الأولى إذا كانت منتشرة أكثر","الأطول دائمًا صحيحة"],c:1,why:"وجود مصدر واضح يساعد على التحقق، مع ضرورة التأكد من موثوقيته أيضًا."},
+{type:"تفكير متوازن",q:"بعض المسائل المتعلقة بالحجاب تحتاج إلى سؤال أهل العلم. ماذا يعني ذلك عند إعداد مشروع مدرسي؟",a:["يجب حذف الموضوع كله","يمكن ذكر أي حكم دون تحقق","لا توجد معلومات موثوقة عن الحجاب","يمكن عرض المعلومات الموثوقة وترك التفاصيل التي تحتاج إلى سؤال مختص"],c:3,why:"يمكن تقديم معلومات موثوقة مع توضيح أن بعض التفاصيل تحتاج إلى سؤال أهل الاختصاص."},
+{type:"ترتيب التفكير",q:"ما أفضل طريقة للإجابة عن سؤال صعب حول الحجاب؟",a:["أفهم السؤال، وأتحقق من التفاصيل والمصادر، ثم أختار الإجابة التي تدعمها المعلومات","أختار أول إجابة تعجبني","أبحث فقط عن مصدر يوافق رأيي","أختار رأي الأكثرية دون تفكير"],c:0,why:"فهم السؤال والتحقق من المعلومات يساعدان على الوصول إلى إجابة أدق."},
+{type:"السؤال الختامي · 20 نقطة",q:"قالت طالبة: «هذا اللباس طويل، إذن هو مستوفٍ لكل ضوابط الحجاب»، مع أنها لم تفحص الشفافية أو بقية الصفات. ما أفضل تقييم؟",a:["كلامها صحيح لأن الطول يكفي","لا يمكن تقييم أي لباس إطلاقًا","الطول وحده لا يكفي للحكم على كل الضوابط؛ ينبغي فحص الصفات الأخرى ذات الصلة","يكفي أن توافق المجموعة على رأيها"],c:2,why:"الطول وحده لا يثبت تحقق جميع الضوابط؛ من الأفضل فحص بقية الصفات المهمة قبل إصدار حكم شامل."}
+];
+let scores=[0,0,0,0], idx=0, answered=false, time=120, tick=null, selectedTeam=null, order=[], timerRunning=false, timerStarted=false, phase='idle', triedTeams=[];
+const $=id=>document.getElementById(id);
+function drawTeams(){
+ $('teams').innerHTML=scores.map((s,i)=>{
+  const used=triedTeams.includes(i), selected=selectedTeam===i;
+  let label='رفع البطاقة ✋', disabled=answered||used||!(phase==='thinking'||phase==='steal');
+  if(selected) label='🎤 دوركم الآن'; else if(used) label='تمت المحاولة';
+  return `<div class="team ${selected?'active':''} ${used?'used':''}"><strong>🌸 المجموعة ${i+1}</strong><div class="score">${s} نقطة</div><button class="buzzbtn" ${disabled?'disabled':''} onclick="buzz(${i})">${label}</button></div>`;
+ }).join('');
+}
+function stopTimer(){if(tick){clearInterval(tick);tick=null;}timerRunning=false;}
+function paintTimer(){const prefix=phase==='thinking'?'🧠 ':phase==='answer'?'🎤 ':'⏱ ';$('timer').textContent=prefix+String(Math.floor(time/60)).padStart(2,'0')+':'+String(time%60).padStart(2,'0');$('timer').className='timer '+(phase==='thinking'?'think-mode':phase==='answer'?'answer-mode':'');}
+function updateTimerControls(){
+ $('timerStart').disabled=timerRunning||answered||phase==='steal';
+ $('timerStart').textContent=timerStarted?'▶ متابعة المؤقّت':'▶ ابدأ السؤال';
+ $('timerPause').disabled=!timerRunning||answered;
+ $('timerStatus').textContent=answered?'انتهى السؤال':timerRunning?(phase==='thinking'?'وقت التفكير يعمل — ارفعوا البطاقة عند الجاهزية':'وقت الإجابة يعمل — 30 ثانية'):(time<=0?'انتهى الوقت':phase==='idle'?'المؤقّت متوقف حتى تضغطي ابدأ السؤال':phase==='steal'?'بانتظار بطاقة مجموعة أخرى':'المؤقّت متوقف');
+}
+function runTimer(){if(timerRunning||answered||time<=0)return;timerStarted=true;timerRunning=true;updateTimerControls();tick=setInterval(()=>{time--;paintTimer();if(time<=0){time=0;stopTimer();paintTimer();if(phase==='thinking'){phase='steal';$('teamTurn').textContent='انتهى وقت التفكير — ارفعوا البطاقات';$('feedback').textContent='انتهى وقت التفكير. أول مجموعة ترفع بطاقتها تحصل على 30 ثانية للإجابة.';time=30;drawTeams();}else if(phase==='answer'){const old=selectedTeam;triedTeams.push(old);selectedTeam=null;phase='steal';$('teamTurn').textContent='فرصة للمجموعات الأخرى';$('feedback').textContent=`انتهى وقت المجموعة ${old+1}. مجموعة أخرى، ارفعوا بطاقتكم للمحاولة.`;time=30;drawTeams();}else if(phase==='steal'){const remaining=[0,1,2,3].filter(i=>!triedTeams.includes(i));if(remaining.length){$('feedback').textContent='انتهى وقت المحاولة. ارفعوا البطاقات للمحاولة التالية.';time=30;}else revealCorrect('انتهت فرص المجموعات.');}updateTimerControls();}},1000);}
+function startQuestion(){if(timerRunning||answered)return;if(phase==='idle'){phase='thinking';time=120;$('feedback').textContent='بدأ وقت التفكير! أول مجموعة ترفع بطاقتها تأخذ فرصة الإجابة.';}runTimer();paintTimer();drawTeams();}
+function pauseTimer(){if(!timerRunning)return;stopTimer();updateTimerControls();}
+function buzz(i){if(answered||triedTeams.includes(i)||!(phase==='thinking'||phase==='steal'))return;
+ if(phase==='thinking'){stopTimer();phase='answer';selectedTeam=i;time=30;$('feedback').textContent=`المجموعة ${i+1} رفعت البطاقة أولًا! أمامها 30 ثانية للإجابة.`;}
+ else if(phase==='steal'){stopTimer();phase='answer';selectedTeam=i;time=30;$('feedback').textContent=`دور المجموعة ${i+1}! أمامها 30 ثانية للإجابة.`;}
+ $('teamTurn').textContent=`دور المجموعة ${i+1}`;paintTimer();drawTeams();runTimer();updateTimerControls();
+}
+function loadQuestion(){
+ stopTimer();answered=false;selectedTeam=null;time=120;timerStarted=false;phase='idle';triedTeams=[];paintTimer();const q=questions[order[idx]];
+ $('round').textContent=`السؤال ${idx+1} من ${questions.length}`;$('teamTurn').textContent='الجميع يفكر';$('progress').style.width=(idx/questions.length*100)+'%';$('kind').textContent=q.type;$('question').textContent=q.q;$('feedback').textContent='اضغطي «ابدأ السؤال» لبدء دقيقتين للتفكير.';$('next').disabled=true;$('next').textContent=idx===questions.length-1?'عرض النتيجة 🏆':'السؤال التالي ←';
+ $('answers').innerHTML=q.a.map((a,i)=>`<button class="answer" data-i="${i}">${['أ','ب','ج','د'][i]}. ${a}</button>`).join('');
+ [...$('answers').children].forEach(b=>b.addEventListener('click',()=>choose(+b.dataset.i)));drawTeams();updateTimerControls();
+}
+function choose(i){if(answered)return;if(phase!=='answer'||selectedTeam===null){$('feedback').textContent='ابدئي السؤال، ثم انتظري رفع بطاقة المجموعة قبل تسجيل الإجابة.';return;}
+ const q=questions[order[idx]], correct=q.c===i;
+ if(correct){answered=true;stopTimer();const pts=q.type.includes('20 نقطة')?20:10;scores[selectedTeam]+=pts;[...$('answers').children].forEach((b,j)=>{b.disabled=true;if(j===q.c)b.classList.add('correct');if(j===i&&!correct)b.classList.add('wrong')});$('feedback').textContent=`إجابة صحيحة! المجموعة ${selectedTeam+1} تحصل على ${pts} نقطة 🌟 ${q.why}`;$('next').disabled=false;phase='done';}
+ else {const failed=selectedTeam;triedTeams.push(failed);stopTimer();[...$('answers').children].forEach(b=>b.disabled=true);$('feedback').textContent=`إجابة غير صحيحة من المجموعة ${failed+1}. ${triedTeams.length<4?'تتاح الفرصة للمجموعات الأخرى: اضغطي «إعادة المحاولة» بعد إتاحة الأزرار أدناه.':'انتهت محاولات المجموعات.'}`;
+  if(triedTeams.length<4){phase='steal';selectedTeam=null;time=30;$('answers').querySelectorAll('button').forEach(b=>b.disabled=false);$('feedback').textContent=`إجابة غير صحيحة من المجموعة ${failed+1}. مجموعة أخرى، ارفعوا بطاقتكم لتحصلوا على 30 ثانية.`;drawTeams();}else{revealCorrect('انتهت محاولات المجموعات.');}
+ }
+ updateTimerControls();drawTeams();
+}
+function revealCorrect(prefix){answered=true;stopTimer();phase='done';const q=questions[order[idx]];[...$('answers').children].forEach((b,j)=>{b.disabled=true;if(j===q.c)b.classList.add('correct')});$('feedback').textContent=`${prefix} الإجابة الصحيحة: ${['أ','ب','ج','د'][q.c]}. ${q.a[q.c]} — ${q.why}`;$('next').disabled=false;updateTimerControls();}
+function finish(){stopTimer();$('game').classList.add('hidden');$('rules').classList.add('hidden');$('result').classList.remove('hidden');let max=Math.max(...scores);let winners=scores.map((s,i)=>s===max?`المجموعة ${i+1}`:null).filter(Boolean);$('winner').textContent=max===0?'أحسنتم جميعًا على المشاركة!':`الفائزة: ${winners.join(' و ')} 🎉`; $('finalScores').innerHTML=scores.map((s,i)=>`<p><strong>المجموعة ${i+1}:</strong> ${s} نقطة</p>`).join('');}
+function reset(){stopTimer();scores=[0,0,0,0];idx=0;order=questions.map((_,i)=>i).sort(()=>Math.random()-0.5);$('game').classList.remove('hidden');$('rules').classList.remove('hidden');$('result').classList.add('hidden');loadQuestion();}
+$('timerStart').addEventListener('click',startQuestion);$('timerPause').addEventListener('click',pauseTimer);$('next').addEventListener('click',()=>{if(idx<questions.length-1){idx++;loadQuestion()}else finish()});$('reset').addEventListener('click',()=>{if(confirm('هل تريدون إعادة المسابقة من البداية؟'))reset()});$('again').addEventListener('click',reset);order=questions.map((_,i)=>i).sort(()=>Math.random()-0.5);loadQuestion();
+</script></body></html>
