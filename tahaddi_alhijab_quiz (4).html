@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>تحدّي الحجاب | كويز تحكيم للمجموعات</title>
+<style>
+:root{--pink:#f7c9df;--pink2:#ffe8f2;--purple:#8d65b5;--purple2:#5c3b80;--ink:#38294a;--white:#fffafd}
+*{box-sizing:border-box}body{margin:0;font-family:Tahoma,Arial,sans-serif;background:linear-gradient(135deg,#fff1f7,#eee3ff);color:var(--ink);min-height:100vh}header{text-align:center;padding:24px 14px 12px}h1{margin:0;color:var(--purple2);font-size:clamp(27px,5vw,44px)}header p{margin:10px 0;color:#715a83}.wrap{max-width:950px;margin:auto;padding:12px 16px 35px}.teams{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:12px 0 18px}.team{background:#fffafd;border:2px solid #e7c8ed;border-radius:16px;padding:12px;text-align:center;box-shadow:0 4px 12px #73508b12;cursor:pointer}.team.active{border-color:#8d65b5;box-shadow:0 0 0 3px #d9c2f2;background:#fff4fb}.team strong{display:block;font-size:15px}.score{font-size:25px;color:var(--purple2);font-weight:bold;margin:7px}.panel{background:#fffafd;border:1px solid #ead5f0;border-radius:24px;padding:clamp(18px,4vw,32px);box-shadow:0 12px 35px #62477d15}.topline{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap;color:#76528f;font-weight:bold}.tag{display:inline-block;background:#ffe3f0;color:#914b77;padding:7px 12px;border-radius:999px;font-size:14px;margin:8px 0}.question{font-size:clamp(22px,4vw,32px);line-height:1.7;margin:8px 0 22px}.btnrow{display:flex;gap:12px;flex-wrap:wrap}.btn{border:0;border-radius:14px;padding:13px 20px;font-size:16px;font-weight:bold;cursor:pointer;font-family:inherit}.good{background:#dff6e7;color:#176534;border:2px solid #8dd5a4}.bad{background:#ffe4e8;color:#9b263a;border:2px solid #f0a5b1}.primary{background:linear-gradient(110deg,#b87fc5,#8d65b5);color:white}.secondary{border:2px solid #d9c2e8;background:#fff8fd;color:#674581}.btn:disabled{opacity:.45;cursor:default}.feedback{margin:16px 0 0;font-weight:bold;font-size:17px;min-height:28px;line-height:1.7}.controls{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:20px}.rules{background:#fff8fd;border-radius:16px;padding:14px 18px;line-height:1.9;margin:14px 0}.hidden{display:none!important}.notice{text-align:center;font-size:14px;color:#795d8c;margin:18px 0}.result{text-align:center}.result h2{color:#69428d}.winner{font-size:24px;color:#8b4c9e;font-weight:bold}.turnselect{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:16px}.turnselect select{font-family:inherit;font-size:16px;padding:10px;border-radius:12px;border:2px solid #e4c9ef;background:#fff}.progress{height:8px;background:#f1e4f5;border-radius:99px;overflow:hidden;margin:16px 0 24px}.progress span{display:block;height:100%;width:0;background:linear-gradient(90deg,#e98fbd,#8d65b5);transition:width .25s}@media(max-width:600px){.teams{grid-template-columns:repeat(2,1fr)}.team{padding:10px}}
+</style></head>
+<body>
+<header><h1>🎀 تحدّي الحجاب 🎀</h1><p>مسابقة تفاعلية — معرفة، تفكير، وروح فريق 💗</p></header>
+<div class="wrap">
+<div class="rules"><strong>طريقة اللعب:</strong> اختاري المجموعة التي عليها الدور، ثم اعرضي السؤال. في الأسئلة المقالية، استمعي للإجابة واحكمي بنفسك. في أسئلة الصح والخطأ، تقرأ المجموعة العبارة وتجيب. اضغطي «إجابة صحيحة» لتحصل المجموعة على 10 نقاط، أو «إجابة خاطئة» دون نقاط. اللعبة لا تصحّح الإجابات بدلًا عنك.</div>
+<div class="teams" id="teams"></div>
+<section class="panel" id="game">
+<div class="topline"><span id="round">السؤال 1 من 20</span><span id="teamTurn">اختاري المجموعة</span></div>
+<div class="progress"><span id="progress"></span></div>
+<div class="turnselect"><label for="teamSelect"><strong>المجموعة التي تجيب:</strong></label><select id="teamSelect"><option value="0">المجموعة الأولى</option><option value="1">المجموعة الثانية</option><option value="2">المجموعة الثالثة</option><option value="3">المجموعة الرابعة</option></select></div>
+<div class="tag" id="kind">سؤال مقالي</div>
+<div class="question" id="question">استعدّوا للتحدّي!</div>
+<div class="btnrow"><button class="btn good" id="correct">✅ إجابة صحيحة +10 نقاط</button><button class="btn bad" id="incorrect">❌ إجابة خاطئة</button></div>
+<div class="feedback" id="feedback" aria-live="polite">اختاري المجموعة، ثم استمعي إلى الإجابة واضغطي الحكم المناسب.</div>
+<div class="controls"><button class="btn secondary" id="reset">إعادة من البداية</button><button class="btn primary" id="next" disabled>السؤال التالي ←</button></div>
+</section>
+<section class="panel result hidden" id="result"><div style="font-size:50px">🏆</div><h2>انتهى التحدّي!</h2><p id="winner" class="winner"></p><div id="finalScores"></div><button class="btn primary" id="again">العبوا مرة أخرى</button></section>
+<p class="notice">💜 تذكير: التحكيم بيدك؛ اقبلي الإجابات الصحيحة حتى لو اختلفت صياغتها.</p>
+</div>
+<script>
+const questions = [
+{type:'مقالي · من العرض',q:'اذكري ثلاثة من شروط الحجاب الشرعي.'},
+{type:'مقالي · من العرض',q:'اذكري الأشخاص الذين يجوز للمرأة كشف حجابها أمامهم.'},
+{type:'مقالي · من العرض',q:'ما الحكمة من مشروعية الحجاب؟'},
+{type:'مقالي · من العرض',q:'اذكري صفتين من صفات الحجاب الشرعي.'},
+{type:'مقالي · من العرض',q:'ما أهمية الحجاب في حياة المرأة المسلمة؟'},
+{type:'مقالي · تفكير ومواقف',q:'لاحظتِ أن زميلتك تسخر من فتاة ترتدي الحجاب الشرعي. كيف تتصرفين؟ ولماذا؟'},
+{type:'مقالي · تفكير ومواقف',q:'طلبت منكِ صديقتك نصيحة عن شروط الحجاب الشرعي. ما النصيحة التي تقدمينها لها؟'},
+{type:'مقالي · تفكير ومواقف',q:'قالت لك زميلتك إن الحجاب مجرد ملابس ولا توجد له حكمة أخرى. كيف توضحين لها وجهة نظرك؟'},
+{type:'مقالي · تفكير ومواقف',q:'شاهدتِ زميلة تنشر معلومات غير صحيحة عن الحجاب. ماذا تفعلين للتعامل مع الموقف بطريقة صحيحة؟'},
+{type:'مقالي · تفكير ومواقف',q:'إذا سألتك فتاة غير مسلمة عن سبب ارتداء المرأة المسلمة للحجاب، فكيف تشرحين لها ذلك باحترام ووضوح؟'},
+{type:'صح وخطأ',q:'من شروط الحجاب الشرعي أن يكون ساترًا لما يجب ستره.'},
+{type:'صح وخطأ',q:'يجوز للمرأة كشف حجابها أمام جميع الرجال من أقاربها.'},
+{type:'صح وخطأ',q:'من حِكَم مشروعية الحجاب طاعة الله تعالى والالتزام بأوامره.'},
+{type:'صح وخطأ',q:'يجوز للمرأة كشف شعرها أمام أخيها.'},
+{type:'صح وخطأ',q:'كل رجل من أقارب المرأة يُعدّ من محارمها.'},
+{type:'صح وخطأ',q:'الحجاب الشرعي يتعلق باللباس فقط، ولا علاقة له بالحياء والسلوك.'},
+{type:'صح وخطأ',q:'يجوز للمرأة كشف شعرها أمام والدها.'},
+{type:'صح وخطأ',q:'ابن العم من محارم المرأة، ولذلك يجوز لها كشف شعرها أمامه.'},
+{type:'صح وخطأ',q:'من آداب النصيحة أن تكون بالحكمة والاحترام.'},
+{type:'صح وخطأ',q:'زوج الأخت من محارم المرأة على التأبيد، ويجوز لها كشف شعرها أمامه.'}
+];
+let scores=[0,0,0,0], idx=0, judged=false;
+const $=id=>document.getElementById(id);
+function drawTeams(){ $('teams').innerHTML=scores.map((s,i)=>`<div class="team ${Number($('teamSelect').value)===i?'active':''}" data-team="${i}"><strong>🌸 المجموعة ${i+1}</strong><div class="score">${s} نقطة</div><button class="btn secondary" style="padding:7px 10px;font-size:14px" onclick="selectTeam(${i})">اختيار المجموعة</button></div>`).join(''); }
+function selectTeam(i){$('teamSelect').value=String(i);$('teamTurn').textContent=`دور المجموعة ${i+1}`;drawTeams();}
+function loadQuestion(){judged=false;const q=questions[idx];$('round').textContent=`السؤال ${idx+1} من ${questions.length}`;$('teamTurn').textContent=`دور المجموعة ${Number($('teamSelect').value)+1}`;$('progress').style.width=(idx/questions.length*100)+'%';$('kind').textContent=q.type;$('question').textContent=q.q;$('feedback').textContent='استمعي إلى الإجابة، ثم حددي إن كانت صحيحة أم خاطئة.';$('correct').disabled=false;$('incorrect').disabled=false;$('next').disabled=true;$('next').textContent=idx===questions.length-1?'عرض النتيجة 🏆':'السؤال التالي ←';drawTeams();}
+function judge(correct){if(judged)return;judged=true;const team=Number($('teamSelect').value);if(correct){scores[team]+=10;$('feedback').textContent=`إجابة صحيحة! أُضيفت 10 نقاط إلى المجموعة ${team+1}. 🌟`;}else{$('feedback').textContent=`تم تسجيل الإجابة كخاطئة. لا تُضاف نقاط لهذه المحاولة.`;}$('correct').disabled=true;$('incorrect').disabled=true;$('next').disabled=false;drawTeams();}
+function finish(){ $('game').classList.add('hidden');$('result').classList.remove('hidden');const max=Math.max(...scores);const winners=scores.map((s,i)=>s===max?`المجموعة ${i+1}`:null).filter(Boolean);$('winner').textContent=max===0?'أحسنتم جميعًا على المشاركة!':`الفائزة: ${winners.join(' و ')} 🎉`;$('finalScores').innerHTML=scores.map((s,i)=>`<p><strong>المجموعة ${i+1}:</strong> ${s} نقطة</p>`).join('');}
+function reset(){scores=[0,0,0,0];idx=0;$('teamSelect').value='0';$('game').classList.remove('hidden');$('result').classList.add('hidden');loadQuestion();}
+$('correct').addEventListener('click',()=>judge(true));$('incorrect').addEventListener('click',()=>judge(false));$('teamSelect').addEventListener('change',()=>{ $('teamTurn').textContent=`دور المجموعة ${Number($('teamSelect').value)+1}`;drawTeams();});$('next').addEventListener('click',()=>{if(idx<questions.length-1){idx++;loadQuestion();}else finish();});$('reset').addEventListener('click',()=>{if(confirm('هل تريدون إعادة المسابقة من البداية؟'))reset();});$('again').addEventListener('click',reset);loadQuestion();
+</script></body></html>
